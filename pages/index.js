@@ -1,6 +1,30 @@
 import Head from 'next/head';
 import styles from '../styles/Home.module.css';
 
+import { configureChains, createClient } from 'wagmi'
+import { mainnet, goerli } from 'wagmi/chains'
+import { SafeConnector } from 'wagmi/connectors/safe'
+import { publicProvider } from 'wagmi/providers/public'
+
+const { chains, provider } = configureChains(
+  [mainnet, goerli],
+  [publicProvider()],
+)
+
+const client = createClient({
+  autoConnect: false,
+  connectors: [
+    // Error is thrown here
+    new SafeConnector({
+      chains,
+    }),
+    new MetaMaskConnector({
+      chains,
+    }),
+  ],
+  provider,
+})
+
 export default function Home() {
   return (
     <div className={styles.container}>
